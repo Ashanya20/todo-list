@@ -3,6 +3,7 @@ import TodoList from './features/TodoList/TodoList';
 import TodoForm from './features/TodoForm';
 import TodosViewForm from './features/TodosViewForm';
 import { useEffect, useState, useCallback } from 'react';
+import styles from './App.module.css';
 
 const url = `https://api.airtable.com/v0/${import.meta.env.VITE_BASE_ID}/${import.meta.env.VITE_TABLE_NAME}`;
 
@@ -190,31 +191,33 @@ function App() {
   };
 
   return (
-    <div>
-      <h1>My Todos</h1>
-      <TodoForm onAddTodo={addTodo} isSaving={isSaving} />
-      <TodoList
-        todoList={todoList}
-        isLoading={isLoading}
-        onCompleteTodo={completeTodo}
-        onUpdateTodo={updateTodo}
-      />
-      <hr />
-      <TodosViewForm
-        sortDirection={sortDirection}
-        setSortDirection={setSortDirection}
-        sortField={sortField}
-        setSortField={setSortField}
-        queryString={queryString}
-        setQueryString={setQueryString}
-      />
-      {errorMessage && (
-        <div>
-          <hr />
-          <p>{errorMessage}</p>
-          <button onClick={() => setErrorMessage('')}>Dismiss</button>
-        </div>
-      )}
+    <div className={styles.app}>
+      <div className={styles.container}>
+        <h1>My Todos</h1>
+        <TodoForm onAddTodo={addTodo} isSaving={isSaving} />
+        <TodoList
+          todoList={todoList}
+          isLoading={isLoading}
+          onCompleteTodo={completeTodo}
+          onUpdateTodo={updateTodo}
+        />
+        <hr />
+        <TodosViewForm
+          sortDirection={sortDirection}
+          setSortDirection={setSortDirection}
+          sortField={sortField}
+          setSortField={setSortField}
+          queryString={queryString}
+          setQueryString={setQueryString}
+        />
+        {errorMessage && (
+          <div className={styles.error}>
+            <hr />
+            <p>{errorMessage}</p>
+            <button onClick={() => setErrorMessage('')}>Dismiss</button>
+          </div>
+        )}
+      </div>
     </div>
   );
 }
