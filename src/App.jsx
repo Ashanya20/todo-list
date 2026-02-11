@@ -58,12 +58,9 @@ function App() {
           type: todoActions.setLoadError,
           error,
         });
-        // } finally {
-        //   setIsLoading(false);
       }
     };
     fetchTodos();
-    // }, [sortField, sortDirection, queryString]);
   }, [encodeUrl, token]);
 
   const addTodo = async (newTodo) => {
@@ -111,15 +108,10 @@ function App() {
       type: todoActions.completeTodo,
       id,
     });
-    // setTodoList((prevTodos) =>
-    //   prevTodos.map((todo) =>
-    //     todo.id === id ? { ...todo, isCompleted: true } : todo
-    //   )
-    // );
     const payload = {
       records: [
         {
-          id: id, // just id (?)
+          id: id,
           fields: {
             title: originalTodo.title,
             isCompleted: true,
@@ -136,25 +128,16 @@ function App() {
       body: JSON.stringify(payload),
     };
     try {
-      // setIsSaving(true);
       const resp = await fetch(encodeUrl(), options);
       if (!resp.ok) {
         throw new Error(resp.message);
       }
     } catch (error) {
-      // console.error(error);
-      // setErrorMessage(`${error.message}. Reverting todo...`);
       dispatch({
         type: todoActions.revertTodo,
         editedTodo: originalTodo,
         error,
       });
-      //   const revertedTodos = todoList.map((todo) =>
-      //     todo.id === originalTodo.id ? originalTodo : todo
-      //   );
-      //   setTodoList(revertedTodos);
-      // } finally {
-      //   setIsSaving(false);
     }
   };
   const updateTodo = async (editedTodo) => {
@@ -163,9 +146,6 @@ function App() {
       type: todoActions.updateTodo,
       editedTodo,
     });
-    // setTodoList((prevTodos) =>
-    //   prevTodos.map((todo) => (todo.id === editedTodo.id ? editedTodo : todo))
-    // );
     const payload = {
       records: [
         {
@@ -186,21 +166,16 @@ function App() {
       body: JSON.stringify(payload),
     };
     try {
-      // setIsSaving(true);
       const resp = await fetch(encodeUrl(), options);
       if (!resp.ok) {
         throw new Error(resp.message);
       }
     } catch (error) {
-      // console.error(error);
-      // setErrorMessage(`${error.message}. Reverting todo...`);
       dispatch({
         type: todoActions.revertTodo,
         editedTodo: originalTodo,
         error,
       });
-      // } finally {
-      //   setIsSaving(false);
     }
   };
 

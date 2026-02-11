@@ -15,6 +15,9 @@ const actions = {
   revertTodo: 'revertTodo',
   //action on Dismiss Error button
   clearError: 'clearError',
+  setQueryString: 'setQueryString',
+  setSortField: 'setSortField',
+  setSortDirection: 'setSortDirection',
 };
 
 const initialState = {
@@ -22,6 +25,9 @@ const initialState = {
   isLoading: false,
   isSaving: false,
   errorMessage: '',
+  sortField: 'createdTime',
+  sortDirection: 'desc',
+  queryString: '',
 };
 
 function reducer(state = initialState, action) {
@@ -56,14 +62,12 @@ function reducer(state = initialState, action) {
         isSaving: true,
       };
     case actions.addTodo: {
+      const record = action.records[0];
       const savedTodo = {
-        id: action.record.id,
-        ...action.record.fields,
+        id: record.id,
+        ...record.fields,
+        isCompleted: record.fields.isCompleted ?? false,
       };
-
-      if (!savedTodo.isCompleted) {
-        savedTodo.isCompleted = false;
-      }
 
       return {
         ...state,
@@ -107,9 +111,25 @@ function reducer(state = initialState, action) {
         ...state,
         errorMessage: '',
       };
+
+    case actions.setQueryString:
+      return {
+        ...state,
+        queryString: action.queryString,
+      };
+    case actions.setSortField:
+      return {
+        ...state,
+        sortField: action.sortField,
+      };
+    case actions.setSortDirection:
+      return {
+        ...state,
+        sortDirection: action.sortDirection,
+      };
     default:
       return state;
   }
 }
 
-export { initialState, actions };
+export { reducer, initialState, actions };
