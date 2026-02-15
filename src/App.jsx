@@ -1,8 +1,10 @@
 import './App.css';
-import TodoList from './features/TodoList/TodoList';
-import TodoForm from './features/TodoForm';
-import TodosViewForm from './features/TodosViewForm';
-import { useReducer, useEffect, useCallback } from 'react';
+import TodosPage from './pages/TodosPage';
+import Header from './shared/Header';
+import About from './pages/About';
+import NotFound from './pages/NotFound';
+import { useLocation, Routes, Route } from 'react-router';
+import { useReducer, useEffect, useCallback, useState } from 'react';
 import styles from './App.module.css';
 import {
   reducer as todosReducer,
@@ -23,6 +25,8 @@ function App() {
     sortDirection,
     queryString,
   } = todoState;
+  const location = useLocation();
+  const [title, setTitle] = useState('Todo List');
   const token = `Bearer ${import.meta.env.VITE_PAT}`;
   const encodeUrl = useCallback(() => {
     let sortQuery = `sort[0][field]=${sortField}&sort[0][direction]=${sortDirection}`;
@@ -61,6 +65,16 @@ function App() {
     };
     fetchTodos();
   }, [encodeUrl, token]);
+  useEffect(() => {
+    if (location.pathname === '/') {
+      setTitle('Todo List');
+    } else if (location.pathname === '/about') {
+      setTitle('About');
+    } else {
+      setTitle('Not Found');
+    }
+  }, [location]);
+
 
   const addTodo = async (newTodo) => {
     dispatch({ type: todoActions.startRequest });
@@ -181,21 +195,24 @@ function App() {
   return (
     <div className={styles.app}>
       <div className={styles.container}>
-        <h1>My Todos</h1>
-        <TodoForm onAddTodo={addTodo} isSaving={isSaving} />
-        <TodoList
-          todoList={todoList}
-          isLoading={isLoading}
-          onCompleteTodo={completeTodo}
-          onUpdateTodo={updateTodo}
-        />
-        <hr />
-        <TodosViewForm
-          sortDirection={sortDirection}
-          sortField={sortField}
-          queryString={queryString}
-          dispatch={dispatch}
-        />
+        <Header title={title} />
+        <Routes>
+          <Route
+            path="/"
+            element={
+              <TodosPage
+                {...todoState}
+                dispatch={dispatch}
+                onAddTodo={addTodo}
+                onCompleteTodo={completeTodo}
+                onUpdateTodo={updateTodo}
+              />
+            }
+          />
+          <Route path="/about" element={<About />} />
+          <Route path="/*" element={<NotFound />} />
+        </Routes>
+
         {errorMessage && (
           <div className={styles.error}>
             <hr />
