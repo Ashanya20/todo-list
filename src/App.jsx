@@ -48,7 +48,6 @@ function App() {
           throw new Error(resp.message);
         }
         const data = await resp.json();
-        // const { records } = data;
         dispatch({
           type: todoActions.loadTodos,
           records: data.records,
