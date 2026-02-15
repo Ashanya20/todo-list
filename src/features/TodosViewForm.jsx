@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { actions as todoActions } from '../reducers/todos.reducer';
 import styled from 'styled-components';
 
 const StyledForm = styled.form`
@@ -20,27 +21,23 @@ const StyledButton = styled.button`
   padding: 0.3rem 0.6rem;
 `;
 
-function TodosViewForm({
-  sortDirection,
-  setSortDirection,
-  sortField,
-  setSortField,
-  queryString,
-  setQueryString,
-}) {
+function TodosViewForm({ sortDirection, sortField, queryString, dispatch }) {
   const [localQueryString, setLocalQueryString] = useState(queryString);
   function preventRefresh(event) {
     event.preventDefault();
   }
   useEffect(() => {
     const debounce = setTimeout(() => {
-      setQueryString(localQueryString);
+      dispatch({
+        type: todoActions.setQueryString,
+        queryString: localQueryString,
+      });
     }, 500);
 
     return () => {
       clearTimeout(debounce);
     };
-  }, [localQueryString, setQueryString]);
+  }, [localQueryString, dispatch]);
   return (
     <StyledForm onSubmit={preventRefresh}>
       <StyledDiv>
@@ -61,7 +58,12 @@ function TodosViewForm({
         <select
           id="sortField"
           value={sortField}
-          onChange={(event) => setSortField(event.target.value)}
+          onChange={(e) =>
+            dispatch({
+              type: todoActions.setSortField,
+              sortField: e.target.value,
+            })
+          }
         >
           <option value="title">Title</option>
           <option value="createdTime">Time added</option>
@@ -71,7 +73,12 @@ function TodosViewForm({
         <select
           id="sortDirection"
           value={sortDirection}
-          onChange={(event) => setSortDirection(event.target.value)}
+          onChange={(e) =>
+            dispatch({
+              type: todoActions.setSortDirection,
+              sortDirection: e.target.value,
+            })
+          }
         >
           <option value="asc">Ascending</option>
           <option value="desc">Descending</option>
